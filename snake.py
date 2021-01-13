@@ -15,16 +15,16 @@ class cube(object):
     rows = 20
     w = 500
 
-    def __init__(self, start, dirnx=1, dirny=0, color=(255, 0, 0)):
+    def __init__(self, start, dirx=1, diry=0, color=(255, 0, 0)):
         self.pos = start
-        self.dirnx = 1
-        self.dirny = 0
+        self.dirx = 1
+        self.diry = 0
         self.color = color
 
-    def move(self, dirnx, dirny):
-        self.dirnx = dirnx
-        self.dirny = dirny
-        self.pos = (self.pos[0] + self.dirnx, self.pos[1] + self.dirny)
+    def move(self, dirx, diry):
+        self.dirx = dirx
+        self.diry = diry
+        self.pos = (self.pos[0] + self.dirx, self.pos[1] + self.diry)
 
     def draw(self, surface, eyes=False):
         dis = self.w // self.rows   # this is the height/width of each cube
@@ -54,9 +54,9 @@ class snake(object):
         # this is the head of the snake, which is always at the front
         self.head = cube(pos)
         self.body.append(self.head)  # this adds the head to the body list
-        # dirnx and dirny represent the direction the snake is facing.
-        self.dirnx = 0
-        self.dirny = 1
+        # dirx and diry represent the direction the snake is facing.
+        self.dirx = 0
+        self.diry = 1
 
     def move(self):
         for event in pygame.event.get():
@@ -67,24 +67,24 @@ class snake(object):
 
             for key in keys:                  # when looping through the pressed keys, -1 indicates left, 1 indicates right, 1 indicates down, and -1 indicates up
                 if keys[pygame.K_LEFT]:
-                    self.dirnx = -1
-                    self.dirny = 0
-                    self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
+                    self.dirx = -1
+                    self.diry = 0
+                    self.turns[self.head.pos[:]] = [self.dirx, self.diry]
 
                 elif keys[pygame.K_RIGHT]:
-                    self.dirnx = 1
-                    self.dirny = 0
-                    self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
+                    self.dirx = 1
+                    self.diry = 0
+                    self.turns[self.head.pos[:]] = [self.dirx, self.diry]
 
                 elif keys[pygame.K_UP]:
-                    self.dirnx = 0
-                    self.dirny = -1
-                    self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
+                    self.dirx = 0
+                    self.diry = -1
+                    self.turns[self.head.pos[:]] = [self.dirx, self.diry]
 
                 elif keys[pygame.K_DOWN]:
-                    self.dirnx = 0
-                    self.dirny = 1
-                    self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
+                    self.dirx = 0
+                    self.diry = 1
+                    self.turns[self.head.pos[:]] = [self.dirx, self.diry]
 
         # loops through every cube in the snake's body
         for i, c in enumerate(self.body):
@@ -99,16 +99,16 @@ class snake(object):
                 if i == len(self.body)-1:
                     self.turns.pop(p)
             else:  # if the cube hasn't reached a turning point, the if/elif conditions below check whether it has hit the edge of the screen. If so, we make it appear on the opposite side.
-                if c.dirnx == -1 and c.pos[0] <= 0:
+                if c.dirx == -1 and c.pos[0] <= 0:
                     c.pos = (c.rows-1, c.pos[1])
-                elif c.dirnx == 1 and c.pos[0] >= c.rows-1:
+                elif c.dirx == 1 and c.pos[0] >= c.rows-1:
                     c.pos = (0, c.pos[1])
-                elif c.dirny == 1 and c.pos[1] >= c.rows-1:
+                elif c.diry == 1 and c.pos[1] >= c.rows-1:
                     c.pos = (c.pos[0], 0)
-                elif c.dirny == -1 and c.pos[1] <= 0:
+                elif c.diry == -1 and c.pos[1] <= 0:
                     c.pos = (c.pos[0], c.rows-1)
                 else:       # if none of the above conditions apply, it continues moving in the current direction
-                    c.move(c.dirnx, c.dirny)
+                    c.move(c.dirx, c.diry)
 
     # the reset function resets the snake so we can replay
     def reset(self, pos):
@@ -116,12 +116,12 @@ class snake(object):
         self.body = []
         self.body.append(self.head)
         self.turns = {}
-        self.dirnx = 0
-        self.dirny = 1
+        self.dirx = 0
+        self.diry = 1
 
     def addCube(self):
         tail = self.body[-1]
-        dx, dy = tail.dirnx, tail.dirny
+        dx, dy = tail.dirx, tail.diry
 
         # the code below which side to add the cube to
         if dx == 1 and dy == 0:
@@ -134,8 +134,8 @@ class snake(object):
             self.body.append(cube((tail.pos[0], tail.pos[1]+1)))
 
         # the cube's direction is then set to the direction of the snake
-        self.body[-1].dirnx = dx
-        self.body[-1].dirny = dy
+        self.body[-1].dirx = dx
+        self.body[-1].diry = dy
 
     def draw(self, surface):
         for i, c in enumerate(self.body):
